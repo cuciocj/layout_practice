@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:instaclone/widgets/post.dart';
+import 'package:english_words/english_words.dart';
 
 import '../model/post_details.dart';
 
@@ -23,13 +24,6 @@ class _FeedPageState extends State<FeedPage> {
       "elementum at, ullamcorper in tortor. Ut fermentum blandit commodo.";
 
   void callback(PostDetail postDetail) {
-    // setState(() {
-    //   if (_saved.contains(postDetail)) {
-    //     _saved.remove(postDetail);
-    //   } else {
-    //     _saved.add(postDetail);
-    //   }
-    // });
     if (_saved.contains(postDetail)) {
       _saved.remove(postDetail);
     } else {
@@ -42,72 +36,31 @@ class _FeedPageState extends State<FeedPage> {
     });
   }
 
+  List<PostDetail> generatePostDetails(int count) {
+    List<PostDetail> list = <PostDetail>[];
+    for (int i = 0; i < count; i++) {
+      WordPair pair = generateWordPairs().take(1).first;
+      PostDetail pd = PostDetail(
+        Random().nextInt(1000) + 1,
+        generateWordPairs().take(1).first.asSnakeCase,
+        'https://picsum.photos/id/' +
+            Random().nextInt(500 - 1).toString() +
+            '/500/',
+        _longCaption,
+        '${pair.first.replaceRange(0, 1, pair.first.substring(0, 1).toUpperCase())}'
+            ' ${pair.second.replaceRange(0, 1, pair.second.substring(0, 1).toUpperCase())}',
+        DateTime.now(),
+        false,
+        false,
+      );
+      list.add(pd);
+    }
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
-    PostDetail postDetail1 = PostDetail(
-      238,
-      'cuciocj',
-      'https://picsum.photos/id/' +
-          Random().nextInt(500 - 0).toString() +
-          '/500/',
-      _longCaption,
-      'Naga, Camarines Sur',
-      DateTime.now(),
-      false,
-      false,
-    );
-
-    PostDetail postDetail2 = PostDetail(
-      237,
-      'cuciocj',
-      'https://picsum.photos/id/' +
-          Random().nextInt(500 - 0).toString() +
-          '/500/',
-      _longCaption,
-      '',
-      DateTime.now(),
-      false,
-      false,
-    );
-
-    PostDetail postDetail3 = PostDetail(
-      239,
-      'cuciocj',
-      'https://picsum.photos/id/' +
-          Random().nextInt(500 - 0).toString() +
-          '/500/',
-      _longCaption,
-      '',
-      DateTime.now(),
-      false,
-      false,
-    );
-
-    PostDetail postDetail4 = PostDetail(
-      235,
-      'cuciocj',
-      'https://picsum.photos/id/' +
-          Random().nextInt(500 - 0).toString() +
-          '/500/',
-      _longCaption,
-      'Big Mountain',
-      DateTime.now(),
-      false,
-      false,
-    );
-
-    PostDetail postDetail5 = PostDetail(
-      230,
-      'cuciocj',
-      'https://picsum.photos/id/' +
-          Random().nextInt(500 - 0).toString() +
-          '/500/',
-      _longCaption,
-      'Big Mountain',
-      DateTime.now(),
-      false,
-      false,
-    );
+    List<PostDetail> postList = <PostDetail>[];
 
     return Container(
       padding: EdgeInsets.zero,
@@ -117,29 +70,18 @@ class _FeedPageState extends State<FeedPage> {
             // pull new uploads
           });
         },
-        child: ListView(
-          children: [
-            Post(
-              postDetail: postDetail1,
+        child: ListView.builder(
+          itemBuilder: (context, index) {
+            if (index >= postList.length) {
+              // generate 5 posts
+              postList.addAll(generatePostDetails(5));
+            }
+
+            return Post(
+              postDetail: postList[index],
               callback: callback,
-            ),
-            Post(
-              postDetail: postDetail2,
-              callback: callback,
-            ),
-            Post(
-              postDetail: postDetail3,
-              callback: callback,
-            ),
-            Post(
-              postDetail: postDetail4,
-              callback: callback,
-            ),
-            Post(
-              postDetail: postDetail5,
-              callback: callback,
-            ),
-          ],
+            );
+          },
         ),
       ),
     );

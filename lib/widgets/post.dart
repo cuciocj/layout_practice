@@ -179,12 +179,12 @@ class _PostState extends State<Post> {
               Row(
                 // view all comments
                 mainAxisAlignment: MainAxisAlignment.start,
-                children: const [
+                children: [
                   Padding(
-                    padding: EdgeInsets.only(bottom: 3),
+                    padding: const EdgeInsets.only(bottom: 3),
                     child: Text(
-                      'View all comments',
-                      style: TextStyle(
+                      'View ${widget._postDetail.likes} comments',
+                      style: const TextStyle(
                         letterSpacing: 0.5,
                         color: Colors.black54,
                         fontSize: 16,
